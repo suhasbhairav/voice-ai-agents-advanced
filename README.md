@@ -8,7 +8,7 @@
 
 **An advanced Next.js OpenAI Realtime voice agents starter with multi-agent orchestration, WebRTC session setup, and operational console UI.**
 
-Built by **[Suhas Bhairav](https://suhasbhairav.com)** as part of the **[AI Templates Marketplace](https://suhasbhairav.com/ai-templates)**.
+Built by **[Suhas Bhairav](https://suhasbhairav.com)** as part of the **[AI Templates](https://suhasbhairav.com/ai-templates)**.
 
 > Enterprise-grade starter template for teams that want a working AI application surface, server-side API isolation, responsive UX, and a clear path from prototype to production.
 
@@ -155,7 +155,7 @@ npm run dev -- -p 3001
 - Add structured JSON output schemas.
 - Add evaluation fixtures for critical user journeys.
 
-## Internal Marketplace Links
+## Internal AI Template Links
 
 - [AI Templates Hub](https://suhasbhairav.com/ai-templates)
 - [This Template Page](https://suhasbhairav.com/ai-templates/voice-ai-agents-advanced)
