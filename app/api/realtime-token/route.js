@@ -1,6 +1,8 @@
+import { parseJsonRequest, validateRequestBody, toSafeError } from "@/lib/production-guardrails";
 export const runtime = "nodejs";
 
 const DEFAULT_MODEL = "gpt-realtime-2.1";
+const ALLOWED_MODELS = new Set(["gpt-realtime-2.1", "gpt-realtime", "gpt-4o-realtime-preview"]);
 const DEFAULT_VOICE = "marin";
 const ALLOWED_VOICES = new Set(["marin", "cedar", "verse"]);
 
@@ -42,8 +44,14 @@ export async function POST(request) {
     });
   }
 
-  const body = await request.json().catch(() => ({}));
-  const model = sanitizeText(body?.model, DEFAULT_MODEL);
+  const body = await parseJsonRequest(request);
+  const guardrail = validateRequestBody(body);
+  if (!guardrail.ok) {
+    return Response.json({ error: guardrail.error }, { status: guardrail.status });
+  }
+
+  const requestedModel = sanitizeText(body?.model, DEFAULT_MODEL);
+  const model = ALLOWED_MODELS.has(requestedModel) ? requestedModel : DEFAULT_MODEL;
   const requestedVoice = sanitizeText(body?.voice, DEFAULT_VOICE);
   const voice = ALLOWED_VOICES.has(requestedVoice) ? requestedVoice : DEFAULT_VOICE;
   const vad = normalizeVad(body?.vad);
@@ -85,11 +93,11 @@ export async function POST(request) {
     try {
       const parsed = JSON.parse(details);
       if (typeof parsed?.error?.message === "string") {
-        message = parsed.error.message;
+        message = toSafeError(parsed.error, message);
       }
     } catch {
       if (details.trim()) {
-        message = details.trim().slice(0, 240);
+        message = toSafeError({ message: details }, message);
       }
     }
 
